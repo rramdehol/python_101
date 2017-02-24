@@ -1,3 +1,5 @@
+from random import randint
+from os import system
 # import hero
 from rpg_hero import Hero;
 from rpg_monsters import Goblin;
@@ -30,9 +32,15 @@ for enemy in enemies:
 			# If the enemy has health. Subtract his power from hero health
 			# hero.health -= enemy.power;
 			enemy.attack(hero);
+			number = randint(1,5);
+			print number;
+			# number = 3;
+        	if (number == 3):
+        		hero.medic_powerup();
 	if hero.alive() > 0:
 		# we know they won cause someones health is zero
 		print 'You won! The %s is defeated' % enemy.name
+		system("say v=Zarvox 'You won the monster is defeated'")
 	else: 
 		# we know the hero lost. because someone won and it
 		print 'You were defeated by the ferocious %s' %enemy.name
