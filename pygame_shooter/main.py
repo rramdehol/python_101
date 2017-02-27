@@ -1,11 +1,15 @@
 import pygame;
-# We need sysy to hault the program
-import sys;
 # print "Pygame Found!"
 from settings import Settings;
-# get out Hero class
+# get our Hero class
 from hero import Hero;
+# get our enemy class
+from enemy import Enemy;
 # Initialize all the pygame modules
+from game_functions import check_events;
+# from pygame get the sprite stuff and groupcollide
+from pygame.sprite import Group, groupcollide
+from start_button import Start_Button
 pygame.init();
 # screen_size = (600,600);
 # make a background color
@@ -16,48 +20,38 @@ pygame.display.set_caption('Monster Attack');
 # Create an object out of our settings class
 game_settings = Settings();
 screen = pygame.display.set_mode(game_settings.screen_size);
+
+# Make a group for the hero to belong to to use group collide
+hero_group = Group()
 hero = Hero(screen);
+hero_group.add(hero);
+enemies = Group();
+enemies.add(Enemy(screen, game_settings));
+# Make a start button =
+start_button = Start_Button(screen);
 
 # This loop will fun forever:
 while 1: 
-	for event in pygame.event.get():
-		# This means the user clicked on the red X
-		if event.type == pygame.QUIT:
-			# Stop the game the user wants off
-			sys.exit();
-		elif event.type == pygame.KEYDOWN:
-			print event.key
-		# check for key press right arrow
-			if event.key == pygame.K_RIGHT:
-				print 'pressed right'
-				hero.moving_right = True;
-			elif event.key == pygame.K_LEFT:
-				print 'pressed left'
-				hero.moving_left = True;
-			elif event.key == pygame.K_UP:
-				print 'pressed up'
-				hero.moving_up = True;
-			elif event.key == pygame.K_DOWN:
-				print 'pressed down'
-				hero.moving_down = True;
-		elif event.type == pygame.KEYUP:
-			if event.key == pygame.K_RIGHT:
-				print 'pressed right'
-				hero.moving_right = False;
-			elif event.key == pygame.K_LEFT:
-				print 'pressed left'
-				hero.moving_left = False;
-			elif event.key == pygame.K_UP:
-				print 'pressed up'
-				hero.moving_up = False;
-			elif event.key == pygame.K_DOWN:
-				print 'pressed down'
-				hero.moving_down = False;
+	# run our check_events here!
+	check_events(hero, start_button, game_settings);
 		# Put the fill as the bg color
 	screen.fill(game_settings.bg_color);
 	# Update the hero booleans
-	hero.update_me();
-	# Draw the hero
-	hero.draw_me();
+	for hero in hero_group.sprites():
+		hero.update_me();
+		# Draw the hero
+		hero.draw_me();
+	for enemy in enemies.sprites():
+		if game_settings.game_active:
+			enemy.update_me(hero);
+		enemy.update_me(hero);
+		enemy.draw_me();
+	hero_died = groupcollide(hero_group, enemies, True, True)
+	if hero_died:
+		print "You Lost!"
+	if game_settings.game_active == False:
+		start_button.draw_button();
+
+	start_button.draw_button();
 	# flip the screen = wipe it out
 	pygame.display.flip();

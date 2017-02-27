@@ -40,7 +40,6 @@ for enemy in enemies:
 	if hero.alive() > 0:
 		# we know they won cause someones health is zero
 		print 'You won! The %s is defeated' % enemy.name
-		system("say v=Zarvox 'You won the monster is defeated'")
-	else: 
+		system("say --voice=Zarvox 'You won the'"+enemy.name+"'is defeated'")
 		# we know the hero lost. because someone won and it
 		print 'You were defeated by the ferocious %s' %enemy.name
